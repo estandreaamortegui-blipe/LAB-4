@@ -186,6 +186,16 @@ A partir de este análisis se calcularon parámetros espectrales como la frecuen
 <p align="center">
   <em>Frecuencia media y mediana</em></p
 
+La frecuencia media inicia alrededor de valores cercanos a 120–125 Hz y presenta una disminución progresiva hasta valores próximos a 115 Hz. Esta tendencia se confirma con la pendiente negativa de la regresión lineal (-0.06 Hz/s), lo que indica una reducción gradual del contenido frecuencial de la señal.
+
+Por su parte, la frecuencia mediana presenta una disminución más pronunciada, pasando aproximadamente de 90 Hz a valores cercanos a 80 Hz. La pendiente de la regresión (-0.11 Hz/s) es más negativa que la de la frecuencia media, lo que sugiere que este parámetro es más sensible a los cambios asociados a la fatiga.
+
+Además de la tendencia general, se observan fluctuaciones locales en ambas curvas, las cuales pueden atribuirse a variaciones en la activación de las unidades motoras durante la contracción. Sin embargo, estas variaciones no afectan la tendencia global descendente.
+
+Desde el punto de vista fisiológico, este comportamiento se relaciona con la disminución en la velocidad de conducción de las fibras musculares y la fatiga progresiva de las unidades motoras. Como consecuencia, el contenido espectral de la señal se desplaza hacia frecuencias más bajas, lo cual se refleja directamente en la disminución de la frecuencia media y mediana.
+
+En conjunto, estos resultados evidencian que el análisis espectral de la señal EMG permite identificar de manera efectiva la aparición de fatiga muscular durante contracciones sostenidas.
+
 Adicionalmente, se realizó un ajuste mediante regresión lineal sobre estos parámetros, con el fin de identificar tendencias en su comportamiento. La pendiente obtenida proporciona una medida cuantitativa del cambio en el contenido frecuencial de la señal.
 
 Para complementar el análisis, se seleccionaron tres segmentos representativos de la señal (inicio, mitad y final), sobre los cuales se calculó la FFT. Esto permitió comparar directamente el contenido espectral en diferentes momentos de la contracción.
@@ -201,163 +211,132 @@ X_seg = np.abs(fft(xi))
  
 Se identificó la frecuencia pico en cada uno de estos segmentos, evidenciando un desplazamiento hacia frecuencias más bajas a medida que avanza la contracción. Este comportamiento es característico de la fatiga muscular y refleja cambios en la activación de las fibras musculares.
 
-<p align="center">
-<img width="902" height="647" alt="image" src="https://github.com/user-attachments/assets/efaf64dc-759b-453a-b9a7-fa467fabe9bc" />
-</p>
-<p align="center">
-  <em>Señal original vs Señal filtrada</em></p
-
-
-#### Medición del Jitter (variación en la frecuencia fundamental)
-
-El jitter mide la variación en el periodo de la señal de voz entre ciclos consecutivos. Para su cálculo, se detectaron los picos de la señal, los cuales representan los ciclos de vibración. A partir de estos picos, se calcularon los periodos \( T_i \) y sus diferencias sucesivas.
-
-El jitter absoluto se obtuvo como el promedio de las diferencias entre periodos consecutivos, mientras que el jitter relativo se calculó como el porcentaje de esta variación respecto al periodo promedio.
-
-Los resultados obtenidos muestran valores elevados de jitter en varias señales, especialmente en las voces masculinas. Por ejemplo, la señal *hombre1.wav* presenta un jitter de 13.9308%, mientras que *mujer3.wav* alcanza un valor de 12.4154%. Estos valores se encuentran por encima del rango típico (menor al 1%), lo que indica una alta variabilidad en la frecuencia de la señal.
-
-#### Medición del Shimmer (variación en la amplitud)
-
-El shimmer mide la variación en la amplitud de la señal entre ciclos consecutivos. Para su cálculo, se tomaron las amplitudes en los picos detectados y se analizaron las diferencias entre valores consecutivos.
-
-El shimmer absoluto corresponde al promedio de estas diferencias, mientras que el shimmer relativo se expresa como un porcentaje respecto a la amplitud promedio.
-
-En los resultados obtenidos, se observan valores de shimmer superiores a los rangos típicos (3%–5%). Por ejemplo, la señal *hombre1.wav* presenta un shimmer de 17.6272%, y *hombre2.wav* alcanza 15.1376%. Incluso en señales femeninas como *mujer3.wav*, el valor es de 10.0855%, lo cual indica una variabilidad significativa en la amplitud de la señal.
 
 #### Análisis de los resultados
 
-Los valores obtenidos de jitter y shimmer evidencian una alta variabilidad en varias de las señales analizadas. Esto puede explicarse por diferentes factores:
+Los resultados obtenidos a partir del análisis espectral de la señal electromiográfica evidencian una variación progresiva en los parámetros de frecuencia media y frecuencia mediana a lo largo del tiempo. Esta variación se manifiesta principalmente como una tendencia decreciente, lo que indica un desplazamiento del contenido espectral hacia frecuencias más bajas.
 
-- Presencia de ruido en las grabaciones.
-- Segmentos de voz que no son completamente periódicos.
-- Variaciones naturales en la producción vocal de los hablantes.
-- Limitaciones en la detección automática de picos.
-- Condiciones no controladas durante la adquisición de las señales.
+Este comportamiento puede explicarse por diferentes factores asociados a la fisiología de la fatiga muscular:
 
-Además, es importante considerar que el cálculo de estos parámetros depende fuertemente de la correcta identificación de los ciclos de la señal. Si la señal no presenta una periodicidad clara, los valores de jitter y shimmer pueden aumentar considerablemente.
+- Disminución en la velocidad de conducción de las fibras musculares.
+- Fatiga progresiva de las unidades motoras durante la contracción sostenida.
+- Cambios en el reclutamiento y sincronización de las fibras musculares.
+- Acumulación de metabolitos como el lactato, que afectan la eficiencia del músculo.
 
-#### Resultados obtenidos
+Además, se observaron fluctuaciones en los valores de frecuencia a lo largo del tiempo, las cuales pueden atribuirse a:
 
-Los valores finales de jitter y shimmer se resumen en la siguiente tabla:
+- Variabilidad natural en la activación muscular.
+- Presencia de ruido en la señal, incluso después del filtrado.
+- Movimiento o leve variación en la posición de los electrodos.
+- Limitaciones propias del proceso de segmentación de la señal.
 
-| Archivo     | Genero | Jitter (%) | Shimmer (%) |
-|------------|--------|------------|-------------|
-| mujer1.wav | Mujer  | 3.1462     | 4.9545      |
-| mujer2.wav | Mujer  | 2.2534     | 5.5305      |
-| mujer3.wav | Mujer  | 12.4154    | 10.0855     |
-| hombre1.wav| Hombre | 13.9308    | 17.6272     |
-| hombre2.wav| Hombre | 11.5165    | 15.1376     |
-| hombre3.wav| Hombre | 11.6516    | 12.5142     |
+Es importante considerar que el cálculo de la frecuencia media y mediana depende de la calidad del espectro obtenido. Factores como la longitud de las ventanas, el solapamiento y el filtrado aplicado pueden influir en la precisión de estos parámetros.
 
-A partir de estos resultados, se observa que las señales masculinas presentan, en general, mayores valores de jitter y shimmer en comparación con las señales femeninas, lo cual indica una mayor variabilidad en la frecuencia y amplitud de estas señales bajo las condiciones de análisis realizadas.
+En conjunto, los resultados muestran que el análisis en el dominio de la frecuencia es una herramienta útil para identificar la fatiga muscular, permitiendo observar de manera objetiva la disminución del contenido de altas frecuencias en la señal EMG durante contracciones sostenidas.
 
 ---
 
-### Parte C – Comparación y conclusiones
+### Parte C 
+En esta sección se realizó un análisis espectral detallado de la señal electromiográfica (EMG) mediante la aplicación de la Transformada Rápida de Fourier (FFT), con el objetivo de observar cómo varía el contenido frecuencial a lo largo de una contracción muscular sostenida.
 
-#### 1. ¿Qué diferencias se observan en la frecuencia fundamental?
+Se seleccionaron segmentos representativos de la señal correspondientes al inicio, la mitad y el final de la contracción. A cada uno de estos segmentos se le aplicó una ventana de Hamming para reducir efectos de fuga espectral y mejorar la estimación del contenido en frecuencia.
 
-A partir de los resultados obtenidos, se observa una diferencia clara entre las voces masculinas y femeninas en términos de frecuencia fundamental (F0).
+```python
+xi = xi * np.hamming(N_seg)
+X_seg = np.abs(fft(xi))
+```
 
-Las voces femeninas presentan valores de F0 más altos:
-- mujer1: 229.67 Hz  
-- mujer2: 178.44 Hz  
-- mujer3: 181.13 Hz  
+Para cada segmento se calculó el espectro de magnitud considerando únicamente el rango de frecuencias entre 20 y 450 Hz, correspondiente a la actividad muscular. Estos espectros fueron representados en escala logarítmica, lo que permitió una mejor visualización de las diferencias en la distribución de energía.
 
-Mientras que las voces masculinas presentan valores más bajos:
-- hombre1: 113.74 Hz  
-- hombre2: 109.43 Hz  
-- hombre3: 154.84 Hz  
+La comparación entre los espectros mostró una disminución progresiva del contenido de altas frecuencias a medida que avanza la contracción. En el segmento inicial se observa una mayor presencia de componentes de alta frecuencia, mientras que en el segmento final estas componentes se reducen notablemente.
 
-Esto confirma el comportamiento esperado, ya que las voces masculinas tienen frecuencias fundamentales menores debido a que las cuerdas vocales son más largas y gruesas, generando vibraciones más lentas. En contraste, las voces femeninas presentan frecuencias más altas debido a cuerdas vocales más cortas y delgadas.
+Adicionalmente, se identificó la frecuencia pico en cada segmento, evidenciando un desplazamiento hacia valores más bajos con el paso del tiempo. Este comportamiento es consistente con la aparición de fatiga muscular.
+
+```python
+f_pico = freqs_s[np.argmax(X_seg)]
+```
+Estos resultados reflejan cambios fisiológicos en el músculo, como la disminución en la velocidad de conducción de las fibras musculares y la fatiga de las unidades motoras, lo cual provoca una redistribución del contenido espectral hacia frecuencias más bajas.
+
+En conjunto, el análisis mediante FFT confirma que el estudio en el dominio de la frecuencia es una herramienta eficaz para detectar y caracterizar la fatiga muscular en señales electromiográficas.
+
+<p align="center">
+<img width="889" height="650" alt="image" src="https://github.com/user-attachments/assets/152a0590-d05f-4898-8665-7e8b1db76e07" />
+</p>
+<p align="center">
+  <em>Desplazamiento del pico espectral</em></p
+                                              
+La gráfica muestra la variación de la frecuencia pico de la señal electromiográfica en tres momentos representativos de la contracción muscular: inicio, mitad y final. Se observa una disminución marcada desde aproximadamente 83.7 Hz al inicio hasta valores cercanos a 47 Hz en la mitad y el final de la contracción.
+
+Este comportamiento evidencia un desplazamiento significativo del contenido espectral hacia frecuencias más bajas, especialmente en la primera mitad del esfuerzo. La caída abrupta entre el inicio y la mitad sugiere que el proceso de fatiga muscular comienza de forma temprana durante la contracción sostenida.
+
+Entre la mitad y el final, la frecuencia pico se mantiene relativamente estable (47.3 Hz a 47.0 Hz), lo que indica que el músculo ya se encuentra en un estado de fatiga más avanzado, donde los cambios en la actividad eléctrica son menos pronunciados.
+
+Desde el punto de vista fisiológico, este fenómeno se asocia con:
+
+- La disminución en la velocidad de conducción de las fibras musculares.
+- La fatiga de las unidades motoras activas.
+- Una mayor sincronización de las fibras, lo que favorece componentes de menor frecuencia.
+
+En conjunto, la gráfica confirma que la frecuencia pico es un indicador sensible de la fatiga muscular, mostrando una reducción clara a medida que progresa la contracción. Además, complementa los resultados obtenidos con la frecuencia media y mediana, reforzando la evidencia del desplazamiento espectral hacia bajas frecuencias.
+
+---
+### Preguntas para la discusión
+
+#### 1. ¿Cambian los valores de frecuencia media y mediana a medida que el músculo se acerca a la fatiga? ¿A qué podría atribuirse este cambio?
+
+Sí, los valores de frecuencia media y frecuencia mediana presentan una disminución progresiva a medida que el músculo se acerca a la fatiga. Este comportamiento se evidencia en las gráficas obtenidas, donde ambas frecuencias muestran una tendencia descendente a lo largo del tiempo.
+
+Este cambio se atribuye principalmente a factores fisiológicos asociados al proceso de fatiga muscular, entre los que se destacan:
+
+- La disminución en la velocidad de conducción de las fibras musculares.
+- La fatiga de las unidades motoras, que reduce su capacidad de activación eficiente.
+- La acumulación de metabolitos (como el lactato), que afecta el funcionamiento del músculo.
+- Cambios en el reclutamiento y sincronización de las fibras musculares.
+
+Como consecuencia, el contenido espectral de la señal electromiográfica se desplaza hacia frecuencias más bajas, lo que se refleja directamente en la reducción de la frecuencia media y mediana.
+
 
 ---
 
-#### 2. ¿Qué otras diferencias notan en términos de brillo, media o intensidad?
+#### 2. ¿Cómo justifica el uso de herramientas como la transformada de Fourier en escenarios como, por ejemplo, terapias de rehabilitación?
 
-En cuanto a la frecuencia media y el brillo (centroide espectral), se observa que en general las voces femeninas tienden a presentar valores elevados, como en el caso de:
-- mujer2: 4337.16 Hz  
-- mujer3: 3353.4 Hz  
+El uso de herramientas como la Transformada de Fourier se justifica porque permite analizar la señal en el dominio de la frecuencia, proporcionando información que no es fácilmente observable en el dominio del tiempo.
 
-Sin embargo, también se observa que una señal masculina (hombre3) presenta un valor alto (4712.82 Hz), lo cual indica que este parámetro no depende únicamente del género, sino también del contenido espectral específico de la señal y la forma de pronunciación.
+En el contexto de terapias de rehabilitación, este tipo de análisis resulta especialmente útil, ya que permite detectar la fatiga muscular de forma objetiva mediante el estudio de cambios en las frecuencias de la señal. Asimismo, facilita el seguimiento del progreso del paciente al evaluar cómo varía la respuesta muscular a lo largo del tiempo.
 
-En términos de energía e intensidad (RMS), no se observa una relación directa con el género. Por ejemplo:
-- mujer2 presenta una intensidad alta (5071.45)
-- hombre2 presenta una intensidad baja (1367.55)
+De igual manera, este análisis contribuye a ajustar la intensidad y duración de los ejercicios, evitando sobrecargas o posibles lesiones. Además, brinda información sobre la activación muscular, lo que resulta útil para diseñar programas de rehabilitación más personalizados y eficientes.
 
-Esto indica que estos parámetros dependen más de la fuerza de la voz, la distancia al micrófono y las condiciones de grabación, más que del género del hablante.
-
----
-
-#### 3. Conclusiones sobre el comportamiento de la voz en hombres y mujeres
-
-El análisis realizado permite concluir que la frecuencia fundamental es el parámetro más confiable para diferenciar entre voces masculinas y femeninas, ya que presenta una separación clara entre ambos grupos.
-
-Por otro lado, parámetros como el brillo y la frecuencia media pueden mostrar tendencias generales, pero no son determinantes por sí solos, ya que pueden variar dependiendo del contenido espectral de la señal.
-
-En cuanto a la energía y la intensidad, estos parámetros no permiten diferenciar el género de forma directa, ya que dependen principalmente de la forma en que se emite la voz y de las condiciones de grabación.
-
-Adicionalmente, el análisis de jitter y shimmer mostró valores elevados en varias señales, especialmente en las masculinas:
-- hombre1: jitter 13.93%, shimmer 17.62%
-- hombre2: jitter 11.51%, shimmer 15.13%
-
-Estos valores indican una alta variabilidad en la señal, lo cual puede deberse a ruido, falta de periodicidad o condiciones no controladas durante la grabación.
-
----
-
-#### 4. Importancia clínica del jitter y shimmer en el análisis de la voz
-
-El jitter y el shimmer son parámetros fundamentales en el análisis clínico de la voz, ya que permiten evaluar la estabilidad de la vibración de las cuerdas vocales.
-
-El jitter mide las variaciones en la frecuencia entre ciclos consecutivos, mientras que el shimmer mide las variaciones en la amplitud. En condiciones normales, estos valores suelen ser bajos (jitter < 1% y shimmer < 3–5%).
-
-En los resultados obtenidos, muchos valores superan estos rangos, lo cual puede deberse a:
-- Ruido en las señales
-- Segmentos no periódicos
-- Errores en la detección de picos
-- Condiciones de grabación no controladas
-
-En el ámbito clínico, valores elevados de jitter y shimmer pueden estar asociados a patologías vocales como disfonías o alteraciones en las cuerdas vocales. Sin embargo, en este caso no se puede concluir la presencia de una patología, ya que los valores también pueden estar influenciados por factores externos.
-
-Por lo tanto, estos parámetros son herramientas útiles para el análisis de la voz, pero deben ser interpretados en conjunto con otros estudios y en condiciones controladas.
+En este sentido, la Transformada de Fourier se convierte en una herramienta clave dentro del procesamiento de señales biomédicas, ya que permite extraer características relevantes que apoyan la toma de decisiones clínicas.
 
 ---
 
 ## Discusión y analisis de resultados
 
-Las señales de voz en el laboratorio, la idea era meternos de lleno en cómo se comportan distintas características acústicas, tanto en el tiempo como en la frecuencia, y de paso mirar unos parámetros que miden la estabilidad de la voz, como el jitter y el shimmer.
+El análisis de la señal electromiográfica permitió evidenciar cambios significativos tanto en el dominio del tiempo como en el dominio de la frecuencia durante una contracción muscular sostenida hasta la fatiga. En el dominio temporal se observaron variaciones en la amplitud de la señal asociadas a la actividad muscular, mientras que en el dominio frecuencial se identificaron transformaciones relevantes en la distribución de energía.
 
-Lo primero que saltó a la vista fue lo de siempre: la frecuencia fundamental (esa que asociamos con el tono de la voz) es claramente distinta entre hombres y mujeres. En las voces femeninas andaba entre 178 Hz y 229 Hz, mientras que en las masculinas estaba más abajo, entre 109 Hz y 154 Hz. Nada nuevo bajo el sol, la teoría lo explica: cuerdas vocales más largas y gruesas vibran más lento (hombres), y las más cortas y delgadas vibran más rápido (mujeres).
+Los resultados obtenidos a partir del cálculo de la frecuencia media y la frecuencia mediana muestran una tendencia decreciente a lo largo del tiempo. Esta disminución indica un desplazamiento progresivo del contenido espectral hacia frecuencias más bajas, lo cual es un comportamiento característico de la fatiga muscular. La pendiente negativa observada en ambas curvas confirma esta tendencia, siendo más pronunciada en la frecuencia mediana, lo que sugiere una mayor sensibilidad de este parámetro frente a los cambios fisiológicos del músculo.
 
-Después nos pusimos a ver otros aspectos, como el centroide espectral o el brillo, que básicamente te dicen dónde se concentra la energía en el espectro. Aquí las mujeres, en general, apuntan más hacia frecuencias altas. Pero ojo, no es una regla fija. Por ejemplo, en el archivo hombre3.wav los valores de frecuencia media salieron bastante altos. Eso te hace pensar que el asunto no es solo cuestión de género, también influye cómo pronuncia cada quien, la entonación, la intensidad y hasta lo que está diciendo en ese momento.
+El análisis por segmentos refuerza este comportamiento. Al comparar el espectro en diferentes momentos de la contracción (inicio, mitad y final), se evidencia una reducción del contenido de altas frecuencias y un cambio en la distribución espectral hacia componentes de menor frecuencia. Este fenómeno se confirma mediante el desplazamiento de la frecuencia pico, que presenta una disminución considerable desde el inicio hasta la mitad del ejercicio, estabilizándose posteriormente en valores más bajos. Esto sugiere que la fatiga comienza a manifestarse de manera temprana durante la contracción sostenida.
 
-Con el RMS, que viene siendo la intensidad promedio de la señal, no encontramos ningún patrón claro ligado al género. Había mujeres con RMS alto y hombres con RMS bajo, y viceversa. La explicación más sensata es que la intensidad depende más de cosas como si la persona habló cerca o lejos del micrófono, cómo estaba configurada la grabación, o el ruido del entorno, que de si es hombre o mujer.
+Desde el punto de vista fisiológico, estos resultados pueden explicarse por la disminución en la velocidad de conducción de las fibras musculares, la fatiga progresiva de las unidades motoras y la acumulación de metabolitos que afectan el desempeño muscular. Estos factores provocan una modificación en la señal EMG, reflejada en la pérdida de componentes de alta frecuencia.
 
-Ahora, el tema del jitter y el shimmer sí que dio para pensar. El jitter mide las variaciones en el periodo (la frecuencia) de un ciclo a otro, y el shimmer hace lo mismo pero con la amplitud. En una voz estable, estos valores suelen ser bajos. Pero cuando vimos los resultados, algunos eran altísimos. En voces masculinas, por ejemplo, encontramos jitter por encima del 10% y shimmer llegando al 17%. Para que te hagas una idea, lo que se considera normal suele ser jitter menor al 1% y shimmer entre 3% y 5% más o menos.
+A pesar de la tendencia general observada, también se presentan fluctuaciones en los valores de frecuencia, las cuales pueden atribuirse a variaciones en la activación muscular, presencia de ruido en la señal, pequeñas alteraciones en la posición de los electrodos y limitaciones propias del proceso de segmentación y análisis.
 
-Uno podría pensar que esos números tan altos son señal de algún problema vocal, pero no hay que apresurarse. Resulta que estos parámetros son muy sensibles. Si la señal tiene ruido, si hay partes donde la voz no es tan periódica, o si el algoritmo que usamos para detectar los picos falla un poco, los valores se disparan. Y como nuestras grabaciones no fueron en un entorno súper controlado, pues es probable que eso haya pasado. De hecho, para poder estimarlos bien tuvimos que filtrar y elegir ventanas donde la voz se viera más estable.
+El uso de herramientas como la Transformada de Fourier se justifica porque permite analizar la señal en el dominio de la frecuencia, proporcionando información que no es fácilmente observable en el dominio del tiempo. En el contexto de terapias de rehabilitación, este tipo de análisis resulta especialmente útil, ya que permite detectar la fatiga muscular de forma objetiva mediante el estudio de cambios en las frecuencias de la señal. Asimismo, facilita el seguimiento del progreso del paciente al evaluar cómo varía la respuesta muscular a lo largo del tiempo.
 
-En el mundo clínico, el jitter y el shimmer sí se usan para evaluar la voz, sobre todo en casos de disfonías o problemas en las cuerdas vocales. Pero si hablamos de patologías más complejas, como las afasias (que afectan el lenguaje, no la parte motora de la voz), pues estos parámetros no dicen mucho. En la disartria, que sí afecta el control muscular del habla, pueden tener más sentido, pero igual hay que combinarlos con otras pruebas.
+De igual manera, este análisis contribuye a ajustar la intensidad y duración de los ejercicios, evitando sobrecargas o posibles lesiones. Además, brinda información sobre la activación muscular, lo que resulta útil para diseñar programas de rehabilitación más personalizados y eficientes. En este sentido, la Transformada de Fourier se convierte en una herramienta clave dentro del procesamiento de señales biomédicas, ya que permite extraer características relevantes que apoyan la toma de decisiones clínicas.
 
-Al final, lo que queda claro es que estas herramientas son útiles, pero no son la verdad absoluta. Sirven para dar pistas, pero un diagnóstico clínico requiere más cosas: otros análisis acústicos, la opinión de especialistas, evaluaciones más completas.
-
-En resumen, el laboratorio nos sirvió para ver en la práctica cómo el procesamiento de señales (con Fourier, autocorrelación, filtros, etc.) permite describir la voz con números y gráficas. También aprendimos que los resultados dependen un montón de cómo se tomen las muestras y cómo se procesen. Y sí, aunque hay diferencias generales entre voces de hombres y mujeres, al final cada señal es única y está llena de matices.
+En conjunto, los resultados obtenidos demuestran que el análisis espectral de señales EMG es una herramienta eficaz para la identificación y caracterización de la fatiga muscular, integrando de manera coherente los hallazgos observados en las diferentes representaciones y parámetros analizados.
 
 ---
 
 ## Conclusiones
 
-- Se logró implementar correctamente el procesamiento digital de señales de voz mediante herramientas como la Transformada de Fourier y la autocorrelación, permitiendo analizar las señales tanto en el dominio del tiempo como en el dominio de la frecuencia.
+- El análisis de la señal electromiográfica permitió evidenciar de manera clara la presencia de fatiga muscular durante una contracción sostenida, manifestada a través de la disminución progresiva de la frecuencia media y la frecuencia mediana.
 
-- La frecuencia fundamental (F0) demostró ser el parámetro más confiable para diferenciar entre voces masculinas y femeninas, evidenciando valores más altos en las voces femeninas y más bajos en las masculinas, en concordancia con las características fisiológicas de las cuerdas vocales.
+- El desplazamiento del contenido espectral hacia frecuencias más bajas, así como la reducción de la frecuencia pico, confirman que los parámetros en el dominio de la frecuencia son indicadores sensibles y confiables de la fatiga muscular.
 
-- El análisis del centroide espectral (frecuencia media) y el brillo mostró que las voces femeninas tienden a presentar mayor contenido en frecuencias altas; sin embargo, estos parámetros no son completamente determinantes, ya que dependen del contenido espectral específico de cada señal.
+- La Transformada de Fourier demostró ser una herramienta fundamental para el análisis de señales biomédicas, al permitir identificar características que no son evidentes en el dominio del tiempo.
 
-- La energía y la intensidad (RMS) no presentaron una relación directa con el género, lo que indica que estos parámetros están más influenciados por factores como la forma de emisión de la voz, la intensidad del hablante y las condiciones de grabación.
-
-- Los parámetros de jitter y shimmer permitieron evaluar la estabilidad de la señal de voz; sin embargo, los valores obtenidos fueron en muchos casos superiores a los rangos típicos, evidenciando la sensibilidad de estos indicadores frente al ruido, la falta de periodicidad y posibles errores en la detección de picos.
-
-- Se evidenció la importancia del preprocesamiento de la señal, especialmente el filtrado y la selección de ventanas periódicas, ya que estos procesos influyen significativamente en la precisión de los resultados obtenidos.
-
-- Se permitió comprender la relevancia del procesamiento digital de señales en aplicaciones como el análisis biomédico y el reconocimiento de voz, destacando la necesidad de trabajar con señales de buena calidad y condiciones controladas para obtener resultados más precisos
+- Los resultados obtenidos resaltan la utilidad del análisis espectral en aplicaciones clínicas, especialmente en el monitoreo de la actividad muscular y el diseño de estrategias de rehabilitación más precisas y seguras.
 
