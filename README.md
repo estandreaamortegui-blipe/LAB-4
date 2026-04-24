@@ -71,7 +71,7 @@ Primero se importan las librerías necesarias para la lectura, procesamiento y a
 Estas herramientas son fundamentales para el procesamiento digital de señales electromiográficas, ya que permiten el acondicionamiento de la señal, su análisis en el dominio del tiempo y la frecuencia, y la extracción de características relevantes para evaluar la fatiga muscular.
 
 <p align="center">
-
+<img width="774" height="800" alt="image" src="https://github.com/user-attachments/assets/7ddebaf5-506e-45de-a269-b3f629e23daa" />
 </p>
 <p align="center">
   <em>Diagrama de flujo del codigo</em></p
