@@ -23,24 +23,18 @@ Andrea Carolina Amórtegui Carrillo – Código 5600963
 
 ## Descripción
 
-El laboratorio se centra en el análisis de señales electromiográficas (EMG) para la identificación de la fatiga muscular mediante herramientas de procesamiento digital de señales. Se emplean tanto señales emuladas como señales reales adquiridas a partir de una contracción muscular sostenida hasta alcanzar la fatiga, con el fin de estudiar sus características en el dominio del tiempo y de la frecuencia.
-
-A partir de estas señales, se realiza su adquisición, filtrado y segmentación, permitiendo analizar la evolución temporal de la actividad muscular durante el esfuerzo continuo. Se aplica la Transformada Rápida de Fourier (FFT) con el objetivo de obtener el contenido espectral de la señal y calcular parámetros característicos como la frecuencia media y la frecuencia mediana.
-
-Adicionalmente, se evalúa cómo estos parámetros cambian a lo largo del tiempo durante la contracción sostenida, lo que permite identificar la aparición de la fatiga muscular, evidenciada principalmente por el desplazamiento del contenido frecuencial hacia componentes de menor frecuencia. Finalmente, se comparan los resultados obtenidos entre señales simuladas y reales, con el propósito de comprender el comportamiento fisiológico del músculo bajo condiciones de esfuerzo prolongado.
+La práctica aborda el estudio de la variabilidad de la frecuencia cardíaca (HRV) mediante el procesamiento de señales ECG, con el propósito de evaluar la modulación autonómica cardíaca en condiciones de reposo y verbalización. A partir de la adquisición y depuración de la señal, se identifican los intervalos R-R y se analizan parámetros temporales y geométricos, incluyendo el diagrama de Poincaré y los índices CVI y CSI. Finalmente, se comparan las variaciones obtenidas entre ambos estados para interpretar los cambios en la actividad simpática y parasimpática del sistema nervioso autónomo.
 
 ---
 
 
 ## Metodología
 
-El desarrollo del laboratorio se dividió en dos partes principales. En cada etapa se emplearon herramientas de programación en Python para el procesamiento y análisis de señales electromiográficas (EMG).
+La metodología se estructuró en etapas de adquisición, depuración y análisis de señales ECG para el estudio de la variabilidad cardíaca. Inicialmente, se registró la señal en condiciones de reposo y verbalización, asegurando parámetros adecuados de muestreo y cuantificación. Posteriormente, se implementó un filtrado digital IIR para atenuar interferencias y optimizar la calidad de la señal.
 
-En primer lugar, se realizó la adquisición y el acondicionamiento de la señal, tanto emulada como real, obtenida a partir de una contracción muscular sostenida hasta alcanzar la fatiga. A estas señales se les aplicó un filtrado pasa banda (20–450 Hz) con el fin de eliminar ruido y artefactos, garantizando así una mejor calidad para su posterior análisis.
+Luego, la señal procesada se segmentó en intervalos de dos minutos, permitiendo la detección de picos R y el cálculo de los intervalos R-R. Con esta información, se realizó el análisis temporal de la HRV mediante parámetros estadísticos básicos y, adicionalmente, se construyó el diagrama de Poincaré para evaluar la dinámica autonómica cardíaca.
 
-Posteriormente, se llevó a cabo el análisis de la señal en el dominio del tiempo y de la frecuencia. Se segmentó la señal en diferentes intervalos representativos a lo largo de la contracción sostenida, permitiendo observar la evolución de la actividad muscular. Para cada segmento, se aplicó la Transformada Rápida de Fourier (FFT), obteniendo su espectro de amplitud y permitiendo identificar la distribución de frecuencias presente en la señal.
-
-Finalmente, se calcularon parámetros espectrales relevantes como la frecuencia media y la frecuencia mediana para cada segmento analizado. Estos parámetros se representaron gráficamente con el fin de evaluar su comportamiento a lo largo del tiempo y evidenciar el efecto de la fatiga muscular, caracterizado por el desplazamiento del contenido frecuencial hacia bajas frecuencias. Asimismo, se compararon los resultados entre la señal emulada y la señal real para analizar diferencias en su comportamiento fisiológico.
+Finalmente, se obtuvieron los índices CVI y CSI a partir de la dispersión de los intervalos R-R, comparando los resultados entre ambas condiciones experimentales para identificar modificaciones en la regulación simpática y parasimpática.
 
 ---
 
@@ -76,84 +70,97 @@ Estas herramientas son fundamentales para el procesamiento digital de señales e
 <p align="center">
   <em>Diagrama de flujo del codigo</em></p
 
-
 ---
+
 ### Parte A
 
-En esta sección se analizó una señal electromiográfica (EMG) simulada, almacenada en un archivo en formato .txt, con el objetivo de estudiar su comportamiento en el dominio del tiempo y de la frecuencia, así como identificar posibles cambios asociados a la fatiga muscular.
+---
 
-La señal fue cargada mediante numpy, extrayendo el vector de tiempo y la amplitud. A partir de estos datos se calculó la frecuencia de muestreo utilizando el intervalo entre muestras. Para mejorar la calidad de la señal, se eliminó el valor medio con el fin de centrarla en cero y se aplicó un filtro pasabajos de 410 Hz que reduce el ruido de alta frecuencia.
+### - Actividad simpática y parasimpática del sistema nervioso autónomo
 
-Se realizó una representación gráfica de la señal original y la señal filtrada, lo que permitió apreciar con claridad el efecto del filtrado y la mejora en la definición de la señal.
+El sistema nervioso autónomo (SNA) tiene dos partes principales: el sistema simpático y el parasimpático. El simpático se activa en situaciones de estrés, ejercicio o peligro, mientras que el parasimpático actúa principalmente durante el reposo y la digestión.
 
-<p align="center">
-<img width="1547" height="662" alt="image" src="https://github.com/user-attachments/assets/ae4412a0-cded-495f-9441-e0337e110903" />
-</p>
-<p align="center">
-  <em>Señal original vs Señal filtrada</em></p
+Una característica importante de ambos sistemas es que nunca están completamente "apagados": siempre mantienen un nivel mínimo de actividad, incluso en reposo. Esto es ventajoso porque significa que el cuerpo puede tanto aumentar como disminuir su respuesta según lo necesite. Si no existiera esta actividad de base, el sistema solo podría activarse, nunca reducir su acción.
 
-La señal filtrada se dividió en ventanas de corta duración para analizar su comportamiento a lo largo del tiempo. A cada segmento se le aplicó una ventana de Hamming, lo que ayuda a reducir efectos no deseados en el análisis espectral. Sobre cada uno de estos segmentos se calculó la Transformada Rápida de Fourier (FFT), obteniendo así su contenido en frecuencia. Con esta información se calcularon la frecuencia media y la frecuencia mediana.
+La mayoría de los órganos internos, como el corazón, reciben señales de ambos sistemas al mismo tiempo, pero con efectos contrarios. Por ejemplo, el sistema simpático acelera el corazón liberando norepinefrina, mientras que el parasimpático lo frena liberando acetilcolina. Gracias a esta oposición coordinada, el organismo puede ajustar la función de sus órganos de forma rápida y precisa: cuando uno se activa más, el otro se inhibe, y viceversa.
 
-Estos parámetros se representaron en función del tiempo, lo que permitió observar su evolución durante toda la señal. Se ajustó una regresión lineal a estos valores para identificar tendencias, aportando una forma cuantitativa de analizar posibles cambios relacionados con la fatiga muscular.
+Este equilibrio entre los dos sistemas no es fijo, sino que cambia constantemente según las circunstancias. En reposo y acostado predomina la actividad parasimpática, mientras que al ponerse de pie, hacer ejercicio o experimentar estrés, toma el control el sistema simpático. Precisamente estas variaciones en el balance autonómico son las que se pueden detectar y medir a través de la variabilidad de la frecuencia cardíaca (HRV), que es el método de análisis central propuesto por Toichi et al. (1997) y en el que se basa esta práctica.
 
-También se calculó la FFT de la señal completa para tener una visión general de su contenido espectral. El espectro se representó en escala logarítmica, incluyendo la ubicación de la frecuencia media y mediana, lo que facilita la interpretación de la distribución de energía en la señal.
+### - Efecto de la actividad simpática y parasimpática en la frecuencia cardíaca
 
-Además, se aplicó la Transformada Rápida de Fourier (FFT) a la señal con el fin de obtener su representación en el dominio de la frecuencia. Este procedimiento permitió analizar la distribución de energía en las diferentes componentes frecuenciales, lo cual es fundamental para el estudio de señales electromiográficas.
+La frecuencia cardíaca es uno de los parámetros más sensibles al control autonómico, ya que el corazón recibe inervación directa de ambas divisiones del SNA. El nodo sinoauricular (SA), que actúa como marcapasos natural del corazón, es el principal punto de regulación de la frecuencia cardíaca y está sometido a la influencia continua tanto del sistema simpático como del parasimpático.
 
-```python
-X = np.abs(fft(x_filtrada))
-frecuencias = fftfreq(N, 1/fs)
-```
+#### Efecto del sistema parasimpático
 
-A partir de este análisis, se trabajó únicamente con las frecuencias positivas dentro del rango de interés (20–450 Hz), correspondiente a la actividad muscular relevante.
+El nervio vago, principal representante de la división parasimpática a nivel cardíaco, libera acetilcolina sobre receptores muscarínicos M₂ en el nodo SA. Esto provoca una reducción en la velocidad de despolarización espontánea de las células marcapasos, lo que se traduce en una disminución de la frecuencia cardíaca, efecto conocido como bradicardia. Este mecanismo actúa de forma muy rápida, pudiendo modificar la frecuencia cardíaca en cuestión de milisegundos, lo que explica por qué las fluctuaciones rápidas del intervalo R–R, como las que ocurren con cada ciclo respiratorio, reflejan principalmente el tono vagal.
 
-Se calcularon parámetros espectrales característicos de la señal. La frecuencia media se obtuvo como el promedio ponderado de las frecuencias, lo que permite identificar el centro de masa del espectro.
+#### Efecto del sistema simpático
 
-```python
-corr = np.correlate(signal, signal, mode='full')
-corr = corr[len(corr)//2:]
-```
-La frecuencia media o centroide espectral se calculó como el promedio ponderado de las frecuencias presentes en la señal, indicando el “centro de masa” del espectro.
+El sistema simpático libera norepinefrina sobre receptores β₁-adrenérgicos en el nodo SA. Esto incrementa la velocidad de despolarización espontánea de las células marcapasos, produciendo un aumento de la frecuencia cardíaca, conocido como taquicardia. A diferencia del parasimpático, la respuesta simpática es más lenta, con una latencia de varios segundos, ya que implica una cascada de señalización intracelular más compleja. Además de acelerar el corazón, el simpático también aumenta la fuerza de contracción del músculo cardíaco.
 
-```python
-f_media = np.sum(freqs * X) / np.sum(X)
-```
-La frecuencia mediana se determinó como la frecuencia que divide el espectro en dos partes con igual contenido de energía, proporcionando una medida robusta del comportamiento frecuencial de la señal.
+En condiciones normales, ambos sistemas actúan de manera simultánea y opuesta sobre el corazón, y la frecuencia cardíaca resultante refleja el equilibrio entre ellos. En reposo predomina el tono parasimpático, manteniendo la frecuencia cardíaca relativamente baja. Ante situaciones de estrés, ejercicio o cambios posturales como ponerse de pie, el sistema simpático gana protagonismo y la frecuencia cardíaca aumenta. Este balance dinámico es continuo y se refleja en las pequeñas variaciones que existen entre un latido y otro, es decir, en la variabilidad de la frecuencia cardíaca (HRV). Por esta razón, analizar la HRV permite estimar de manera indirecta y no invasiva el estado de actividad de cada rama del SNA.
 
-```python
-acumulada = np.cumsum(X)
-mitad = acumulada[-1] / 2
-f_mediana = freqs[np.where(acumulada >= mitad)[0][0]]
-```
-Estos parámetros se calcularon para diferentes segmentos de la señal, lo que permitió analizar su evolución a lo largo del tiempo. Este enfoque resulta especialmente útil para identificar cambios en el contenido frecuencial asociados a la fatiga muscular.
+### - Variabilidad de la frecuencia cardíaca (HRV) obtenida a partir de la señal electrocardiográfica (ECG)
 
+La variabilidad de la frecuencia cardíaca (HRV, del inglés Heart Rate Variability) es la fluctuación natural que existe en el tiempo transcurrido entre latidos cardíacos consecutivos. Aunque a simple vista podría parecer que el corazón late de forma completamente regular, en realidad el intervalo entre un latido y el siguiente varía constantemente, y esa variación contiene información valiosa sobre el estado del sistema nervioso autónomo.
 
-### Representación gráfica de las señales
+#### Obtención de la HRV a partir del ECG
 
-Las gráficas obtenidas permiten visualizar el comportamiento de la señal electromiográfica tanto en el dominio del tiempo como en el dominio de la frecuencia. En el dominio temporal se observan variaciones en la amplitud asociadas a la actividad muscular durante la contracción, mientras que en el dominio frecuencial se identifican las principales componentes de energía de la señal.
+La señal electrocardiográfica (ECG) registra la actividad eléctrica del corazón a lo largo del tiempo. Dentro de esta señal, el complejo QRS representa la despolarización ventricular, y su pico más prominente, la onda R, es el punto de referencia utilizado para medir el tiempo entre latidos. El intervalo entre dos ondas R consecutivas se denomina intervalo R–R y se expresa en milisegundos (ms). La secuencia de estos intervalos a lo largo del tiempo forma el llamado taquigrama o serie R–R, que es la base de todos los análisis de HRV.
 
-A partir de estas representaciones, es posible evidenciar cambios en la distribución de frecuencias a lo largo del tiempo. En particular, se observa una tendencia a la disminución de las componentes de alta frecuencia y un desplazamiento del contenido espectral hacia frecuencias más bajas, lo cual es característico del proceso de fatiga muscular.
+Una HRV elevada generalmente indica un buen equilibrio autonómico y se asocia con buena salud cardiovascular. Por el contrario, una HRV reducida se ha relacionado con condiciones como diabetes, enfermedades cardíacas, estrés crónico y envejecimiento. Por esta razón, el análisis de la HRV se ha convertido en una herramienta ampliamente utilizada tanto en investigación como en la práctica clínica para evaluar de forma no invasiva el estado funcional del sistema nervioso autónomo.
 
+### - Diagrama de Poincaré como herramienta de análisis de la serie R-R
 
-### Resultado parte A
+El diagrama de Poincaré, es una herramienta de analisis que permite visualizar y cuantificar la dinámica de la serie R-R de forma geométrica para describir sistemas dinámicos no periódicos, en paricular de la variabilidad de la frecuencia cardíaca.
 
-El análisis espectral permitió caracterizar la señal electromiográfica mediante parámetros relevantes como la frecuencia media y la frecuencia mediana, los cuales describen la distribución de energía en el dominio de la frecuencia.
+#### Construcción del diagrama
 
-Se observó que, a medida que avanza la contracción muscular, ambos parámetros tienden a disminuir de forma progresiva. Esta variación indica un desplazamiento del contenido espectral hacia frecuencias más bajas, lo que es consistente con la aparición de la fatiga muscular. La tendencia se evidencia tanto en las gráficas de evolución temporal como en el ajuste de regresión lineal, donde se obtienen pendientes negativas.
+El diagrama se construye representando cada intervalo R–R en función del intervalo inmediatamente siguiente. Es decir, si la serie de intervalos consecutivos se denomina I₁, I₂, I₃, …, Iₙ, cada punto del diagrama corresponde al par ordenado (Iₖ, Iₖ₊₁), donde Iₖ es el intervalo actual e Iₖ₊₁ es el intervalo siguiente. Este proceso se repite para cada par consecutivo de la serie, generando una nube de puntos en un plano bidimensional.
+En personas sanas, esta nube de puntos adopta característicamente una forma elipsoide orientada a lo largo de la diagonal del plano, conocida como línea identidad (Iₖ = Iₖ₊₁). La forma, el tamaño y la orientación de esta elipse contienen información directa sobre la dinámica autonómica del corazón.
 
-Además, al comparar los espectros de diferentes segmentos de la señal (inicio, mitad y final), se identifica una reducción en las componentes de alta frecuencia y un cambio en la frecuencia pico hacia valores menores. Este comportamiento refleja cambios fisiológicos en el músculo, como la disminución en la velocidad de conducción de las fibras musculares y la fatiga de las unidades motoras.
+#### Ejes de la elipse 
 
-Estos resultados confirman la utilidad del análisis en el dominio de la frecuencia como una herramienta efectiva para la detección de fatiga muscular a partir de señales electromiográficas.
+El eje transversal (T) es perpendicular a la línea identidad y refleja la variación latido a latido de los intervalos R–R. Cuando dos intervalos consecutivos difieren considerablemente entre sí, el punto correspondiente se aleja de la diagonal, lo que genera un eje T de mayor longitud. Esta variación rápida entre latidos está estrechamente relacionada con la actividad del sistema parasimpático, ya que el nervio vago puede modificar la frecuencia cardíaca de forma casi inmediata.
+
+El eje longitudinal (L) es paralelo a la línea identidad y refleja la amplitud global de las fluctuaciones de la serie R–R a lo largo del tiempo. Cuando existe una variación lenta y de gran amplitud, los puntos se distribuyen ampliamente a lo largo de la diagonal, produciendo un eje L largo con un eje T relativamente corto. Este tipo de fluctuación está asociada a cambios más lentos en la frecuencia cardíaca, vinculados tanto al sistema simpático como a otros mecanismos de regulación de más largo plazo.
+
+#### Índices autonómicos derivados
+
+A partir de los ejes de la elipse se pueden calcular dos índices numéricos que permiten estimar de forma independiente la actividad de cada rama del sistema nervioso autónomo.
+
+#### Índice Vagal Cardíaco (CVI)
+
+Este índice representa el tamaño total de la elipse, ya que el producto L × T es proporcional a su área. Cuando la actividad parasimpática es alta, la variabilidad entre latidos es grande y la elipse ocupa mayor área en el diagrama, resultando en un CVI elevado. Por el contrario, cuando el tono vagal disminuye, la elipse se contrae y el CVI se reduce. Se utiliza el logaritmo en base 10 porque los valores del producto L × T pueden abarcar un rango muy amplio, y la transformación logarítmica permite manejar estos datos de forma más estable estadísticamente.
+
+#### Índice Simpático Cardíaco (CSI)
+
+Este índice representa la elongación de la elipse, es decir, qué tan larga y estrecha es en comparación con su ancho. Cuando la actividad simpática es elevada, las fluctuaciones lentas de la frecuencia cardíaca predominan sobre las rápidas, haciendo que la elipse se alargue a lo largo de la diagonal pero se estreche en sentido perpendicular, aumentando así el valor del cociente L/T. Cuando el tono simpático es bajo, la elipse tiende a ser más redondeada y el CSI disminuye.
+La principal ventaja de estos dos índices es que son independientes entre sí: el CVI puede cambiar sin que lo haga el CSI y viceversa, lo que permite evaluar ambas ramas del sistema nervioso autónomo de forma simultánea y separada a partir de una única medición.
+
+### - Variabilidad de la frecuencia cardíaca y balance autonómico
+
+La variabilidad de la frecuencia cardíaca y el balance autonómico son dos conceptos estrechamente relacionados, ya que la HRV es precisamente el reflejo cuantitativo del equilibrio dinámico entre las dos ramas del sistema nervioso autónomo sobre el corazón.
+
+El balance autonómico no es un estado fijo sino una condición en permanente ajuste. En cada momento, el corazón recibe simultáneamente señales del sistema simpático y del parasimpático, y la frecuencia cardíaca resultante depende de cuál de los dos predomina en ese instante. Cuando ambos sistemas están equilibrados y activos, el corazón presenta una variabilidad alta entre latidos, lo que se traduce en una HRV elevada. Cuando uno de los dos sistemas domina de forma sostenida sobre el otro, la variabilidad tiende a reducirse.
+
+Desde esta perspectiva, una HRV alta no significa que el corazón sea irregular o inestable, sino todo lo contrario: indica que el sistema nervioso autónomo está respondiendo de forma flexible y apropiada a los cambios del entorno. Esta capacidad de adaptación es una señal de buena salud cardiovascular y de un sistema autonómico funcionalmente íntegro.
+
+Por otro lado, una HRV baja sugiere una reducción en la capacidad del sistema nervioso autónomo para modular la frecuencia cardíaca, lo que puede deberse a un predominio sostenido del tono simpático, a una disminución de la actividad vagal, o a ambas cosas simultáneamente. Esta condición se ha asociado con diversas situaciones fisiopatológicas como el estrés crónico, el envejecimiento, la diabetes, las enfermedades cardiovasculares y los trastornos del sistema nervioso autónomo.
+
+El análisis de la HRV permite entonces estimar indirectamente el estado del balance autonómico sin necesidad de ningún procedimiento invasivo. Dependiendo del método de análisis utilizado, es posible obtener información sobre la actividad vagal de forma aislada, sobre la actividad simpática, o sobre la interacción entre ambas. Esta es precisamente la razón por la que la HRV se ha consolidado como una herramienta valiosa tanto en la investigación fisiológica como en la evaluación clínica del sistema nervioso autónomo.
+
 
 ---
 
 ### Parte B
 
-En esta sección se realizó el análisis de una señal electromiográfica (EMG) real obtenida a partir de una contracción muscular sostenida hasta la fatiga, con el objetivo de evaluar su comportamiento espectral a lo largo del tiempo.
+Inicialmente, se implementó una función para la carga de la señal ECG desde un archivo de texto, descartando líneas vacías o comentarios y seleccionando el canal correspondiente a la señal cardíaca. Posteriormente, los datos fueron convertidos a milivoltios considerando el voltaje de referencia del sistema y la ganancia empleada durante la adquisición.
 
-Inicialmente, la señal fue cargada desde un archivo utilizando la librería pandas, seleccionando el canal correspondiente a la medición EMG. Se asumió una frecuencia de muestreo de 1000 Hz y se construyó el eje temporal para su análisis.
+Luego, se diseñó un filtro digital Butterworth pasa-banda de cuarto orden con frecuencias de corte entre 0.5 Hz y 40 Hz, rango adecuado para señales electrocardiográficas. Este procedimiento permitió reducir componentes de ruido de baja y alta frecuencia, conservando las características principales del ECG. Adicionalmente, se obtuvo la ecuación en diferencias del filtro con el fin de representar matemáticamente su implementación discreta.
 
-Para el acondicionamiento de la señal, se eliminó el valor medio con el fin de centrarla en cero y se aplicó un filtro pasabanda entre 20 y 450 Hz, rango característico de las señales electromiográficas. Este filtrado permitió reducir el ruido y conservar únicamente la información relevante de la actividad muscular.
+Posteriormente, el filtrado fue aplicado mediante procesamiento digital de señales utilizando la función lfilter, obteniendo una señal ECG acondicionada para las etapas posteriores de análisis. Finalmente, se implementó un algoritmo de detección de picos R basado en criterios estadísticos de amplitud, prominencia y distancia mínima entre picos, permitiendo calcular los intervalos R-R y parámetros básicos asociados a la frecuencia cardíaca.
+
 
 ```python
 x = x - np.mean(x)
