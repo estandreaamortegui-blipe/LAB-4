@@ -161,37 +161,80 @@ Luego, se diseñó un filtro digital Butterworth pasa-banda de cuarto orden con 
 
 Posteriormente, el filtrado fue aplicado mediante procesamiento digital de señales utilizando la función lfilter, obteniendo una señal ECG acondicionada para las etapas posteriores de análisis. Finalmente, se implementó un algoritmo de detección de picos R basado en criterios estadísticos de amplitud, prominencia y distancia mínima entre picos, permitiendo calcular los intervalos R-R y parámetros básicos asociados a la frecuencia cardíaca.
 
+El filtro se realizó mediante un filtro digital Butterworth pasa-banda de cuarto orden, diseñado para conservar únicamente las frecuencias características de la señal ECG entre 0.5 Hz y 40 Hz, eliminando componentes de ruido de baja y alta frecuencia.
+
 
 ```python
-x = x - np.mean(x)
-x_filtrada = filtro_pasabanda(x, fs, 20, 450)
+def disenar_filtro(fs, f_low=0.5, f_high=40.0, orden=4):
+    nyq = fs / 2.0
+    b, a = signal.butter(
+        orden,
+        [f_low/nyq, f_high/nyq],
+        btype='band'
+    )
 ```
+La implementación del filtro se llevó a cabo utilizando la función butter() de la librería scipy.signal, la cual calcula los coeficientes del filtro digital en función de la frecuencia de muestreo y las frecuencias de corte establecidas.
+
 <p align="center">
-<img width="1523" height="632" alt="image" src="https://github.com/user-attachments/assets/03c16d7d-741b-4b9c-a288-0c23f4aa2b60" />
+<img width="1905" height="512" alt="image" src="https://github.com/user-attachments/assets/bb60221e-a7aa-412c-8d0c-84dc0f2a73ee" />
 </p>
 <p align="center">
   <em>Señal original vs Señal filtrada</em></p
 
-Se generó una representación gráfica de la señal original y la señal filtrada, lo que permitió evidenciar la mejora en la calidad de la señal tras el proceso de filtrado.
+La ecuación en diferencias se obtuvo a partir de los coeficientes del filtro digital Butterworth calculados mediante la función signal.butter(). Esta función entrega dos conjuntos de coeficientes:
 
-Posteriormente, la señal fue segmentada en ventanas con solapamiento, lo que permitió analizar su evolución durante toda la contracción. En cada segmento se aplicó la Transformada Rápida de Fourier (FFT) para obtener su contenido en frecuencia.
+- b: coeficientes asociados a las entradas de la señal x[n],
+- a: coeficientes asociados a las salidas anteriores y[n].
+
+Con estos coeficientes se construyó la representación matemática discreta del filtro, expresando cada muestra de salida como una combinación lineal de muestras actuales y anteriores de la señal de entrada y de la propia salida.
 
 ```python
-fm, fmed = calcular_frecuencias(xi, fs)
+lhs = " + ".join(
+    f"({b[k]:.8f})·x[n-{k}]"
+    for k in range(len(b))
+    if abs(b[k]) > 1e-12
+)
+
+rhs = " + ".join(
+    f"({a[k]:.8f})·y[n-{k}]"
+    for k in range(1, len(a))
+    if abs(a[k]) > 1e-12
+)
+
+print(f"y[n] = {lhs}")
+
+if rhs:
+    print(f"     - {rhs}")
 ```
-<p align="center">
-<img width="1294" height="647" alt="image" src="https://github.com/user-attachments/assets/dad21b15-341f-45e5-a9cf-7ffb78e2d639" />
-</p>
-<p align="center">
-  <em>Transformada de fourier</em></p
-
-A partir de este análisis se calcularon parámetros espectrales como la frecuencia media y la frecuencia mediana, los cuales fueron representados en función del tiempo. Esto permitió observar la evolución de estas frecuencias a medida que el músculo se aproxima a la fatiga.
 
 <p align="center">
-<img width="1286" height="647" alt="image" src="https://github.com/user-attachments/assets/a0673bff-b550-43e1-84b6-03bb801f7263" />
+<img width="1765" height="96" alt="image" src="https://github.com/user-attachments/assets/d846b9fd-c9a0-43aa-97cd-36c891552e11" />
 </p>
 <p align="center">
-  <em>Frecuencia media y mediana</em></p
+  <em>Ecuación de diferencias</em></p
+
+La ecuación en diferencias representa la implementación discreta del filtro digital IIR diseñado para el acondicionamiento de la señal ECG. En esta expresión, cada muestra de salida depende tanto de muestras actuales y pasadas de la señal de entrada como de salidas anteriores del sistema. Esto permite modelar el comportamiento dinámico del filtro y realizar el procesamiento digital de la señal de manera recursiva.
+
+Después del diseño del filtro Butterworth pasa-banda, este fue aplicado a la señal ECG utilizando parámetros iniciales iguales a cero mediante la función lfilter() de la librería scipy.signal. La implementación se realizó con el siguiente fragmento de código:
+
+```python
+def filtrar(ecg_mv, b, a):
+    return signal.lfilter(b, a, ecg_mv)
+```
+Posteriormente, la señal filtrada fue dividida en dos segmentos de dos minutos cada uno, correspondientes a las condiciones de reposo y verbalización.
+
+```python
+seg1 = ecg_filtrada[:2*60*fs]
+seg2 = ecg_filtrada[2*60*fs:4*60*fs]
+```
+
+La segmentación permitió analizar las variaciones de la frecuencia cardíaca bajo diferentes estados fisiológicos.
+
+<p align="center">
+<img width="1809" height="907" alt="image" src="https://github.com/user-attachments/assets/a7c2bd65-de47-4c80-9632-7a49bc880ca5" />
+</p>
+<p align="center">
+  <em>Intervalos R-R</em></p
 
 La frecuencia media inicia alrededor de valores cercanos a 120–125 Hz y presenta una disminución progresiva hasta valores próximos a 115 Hz. Esta tendencia se confirma con la pendiente negativa de la regresión lineal (-0.06 Hz/s), lo que indica una reducción gradual del contenido frecuencial de la señal.
 
